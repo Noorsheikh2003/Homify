@@ -17,7 +17,7 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     
     // Changed duration to 5 seconds as you requested
-    Future.delayed(const Duration(seconds: 3), () {
+    Future.delayed(const Duration(seconds: 5), () {
       // Check if the widget is still in the tree before navigating
       if (mounted) {
         // Use pushReplacementNamed to match your main.dart route table
@@ -35,7 +35,8 @@ class _SplashScreenState extends State<SplashScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             // Added an icon to make it look like a real splash screen
-            Icon(Icons.home_repair_service, size: 80, color: Colors.white),
+           //Icon(Icons.home_repair_service, size: 80, color: Colors.white),
+           Icon(Icons.home_work_rounded, size: 100, color: Colors.white),
             SizedBox(height: 20),
             Text(
               'HomiFy',

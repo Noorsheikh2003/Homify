@@ -34,7 +34,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     // Matching Icon and Title Style
-                    const Icon(Icons.person_add_rounded, size: 80, color: Colors.indigo),
+                    const Icon(Icons.person_add_rounded, size: 80, color: Colors.teal),
                     const SizedBox(height: 10),
                     const Text(
                       "Join Homify",
@@ -42,7 +42,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       style: TextStyle(
                         fontSize: 32, 
                         fontWeight: FontWeight.bold, 
-                        color: Colors.indigo
+                        color: Colors.teal,
                       ),
                     ),
                     const SizedBox(height: 40),
@@ -104,7 +104,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       },
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 15),
-                        backgroundColor: Colors.indigo,
+                        backgroundColor: Colors.teal,
                         foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
@@ -126,7 +126,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           child: const Text(
                             "Login here",
                             style: TextStyle(
-                              color: Colors.indigo,
+                              color: Colors.teal,
                               fontWeight: FontWeight.bold,
                               decoration: TextDecoration.underline,
                             ),
