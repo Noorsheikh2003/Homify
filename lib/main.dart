@@ -11,6 +11,7 @@ import 'screens/provider_profile_page.dart';
 // Customer Screens
 import 'screens/customer_dashboard.dart';
 import 'screens/customer_profile_page.dart';
+import 'screens/find_services_page.dart';
 
 void main() {
   runApp(const HomifyApp());
@@ -45,6 +46,7 @@ class HomifyApp extends StatelessWidget {
         // Customer Routes
         '/customer_dashboard': (context) => const CustomerDashboard(),
         '/customer_profile_page': (context) => const CustomerProfilePage(),
+        '/find_services': (context) => const FindServicesPage(),
         
       },
     );

@@ -66,7 +66,7 @@ class _LoginPageState extends State<LoginPage> {
                     ElevatedButton(
                       onPressed: () {
                         // For now, bypass to dashboard
-                       Navigator.pushReplacementNamed(context, '/provider_dashboard');
+                       Navigator.pushReplacementNamed(context, '/customer_dashboard');
                       },
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 15),

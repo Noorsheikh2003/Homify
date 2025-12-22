@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'customer_profile_page.dart'; // Ensure this is imported
+import 'customer_profile_page.dart'; 
+import 'find_services_page.dart';
+import 'about_page.dart';
 
 class CustomerDashboard extends StatelessWidget {
   const CustomerDashboard({super.key});
@@ -11,9 +13,35 @@ class CustomerDashboard extends StatelessWidget {
         title: const Text("Customer Portal", style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.teal,
         centerTitle: true,
+        // CUSTOM ABOUT US ICON + TEXT ON THE LEFT
+        leadingWidth: 80, // Increased width to fit the text
+        leading: GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const AboutPage()),
+            );
+          },
+          child: const Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.person, color: Colors.white, size: 22),
+              Text(
+                "About Us",
+                style: TextStyle(
+                  color: Colors.white, 
+                  fontSize: 10, 
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+        ),
+        // LOGOUT ICON ON THE RIGHT
         actions: [
           IconButton(
             icon: const Icon(Icons.logout, color: Colors.white),
+            tooltip: 'Logout',
             onPressed: () => Navigator.pushReplacementNamed(context, '/login'),
           ),
         ],
@@ -33,22 +61,20 @@ class CustomerDashboard extends StatelessWidget {
             ),
             const SizedBox(height: 40),
 
-            // 1. Customer Profile Button (Fixed Navigation)
             _buildDashboardButton(
               context,
               "Customer Profile",
               Icons.person_pin,
-              const CustomerProfilePage(), // Pass the actual Page Widget here
+              const CustomerProfilePage(),
             ),
 
             const SizedBox(height: 20),
 
-            // 2. Find Services Button (Placeholder for now)
             _buildDashboardButton(
               context,
               "Find Services",
               Icons.search,
-              null, // We will create this page next
+              const FindServicesPage(),
             ),
           ],
         ),
@@ -56,7 +82,7 @@ class CustomerDashboard extends StatelessWidget {
     );
   }
 
-  // Updated Helper Method
+  // Helper Method
   Widget _buildDashboardButton(BuildContext context, String title, IconData icon, Widget? destinationPage) {
     return ElevatedButton.icon(
       onPressed: () {
