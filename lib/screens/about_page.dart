@@ -27,7 +27,7 @@ class AboutPage extends StatelessWidget {
                 ),
                 child: const Icon(
                   Icons.home_work_rounded, 
-                  size: 100, 
+                  size: 80, 
                   color: Colors.teal,
                 ),
               ),
@@ -37,7 +37,7 @@ class AboutPage extends StatelessWidget {
             const Text(
               "HOMIFY",
               style: TextStyle(
-                fontSize: 35, 
+                fontSize: 30, 
                 fontWeight: FontWeight.w900, 
                 color: Colors.teal, 
                 letterSpacing: 3
