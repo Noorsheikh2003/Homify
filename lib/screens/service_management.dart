@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'add_service_page.dart'; // Import the new page
+import 'add_service_page.dart';
 
 class ServiceManagementPage extends StatefulWidget {
   const ServiceManagementPage({super.key});
@@ -9,27 +9,52 @@ class ServiceManagementPage extends StatefulWidget {
 }
 
 class _ServiceManagementPageState extends State<ServiceManagementPage> {
-  final List<String> _myServices = ["Home Cleaning", "Plumbing"];
+  List<Map<String, dynamic>> _myServices = [];
 
-  // Logic to navigate and wait for the new service name
+  // Logic to navigate and add a NEW service
   void _navigateAndAddService() async {
     final result = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => AddServicePage()),
+      MaterialPageRoute(builder: (context) => const AddServicePage()),
     );
 
-    // If result is received, update the list
-    if (result != null && result is String) {
+    if (result != null && result is Map<String, dynamic>) {
       setState(() {
         _myServices.add(result);
       });
     }
   }
 
+  // Logic to DELETE a service
   void _deleteService(int index) {
     setState(() {
       _myServices.removeAt(index);
     });
+  }
+
+  // UPDATED: Logic to View and then UPDATE an existing service
+  void _viewServiceDetails(int index) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AddServicePage(
+          existingService: _myServices[index],
+          isReadOnly: true, 
+        ),
+      ),
+    );
+
+    // This block runs after you "Pop" back from AddServicePage
+    if (result != null && result is Map<String, dynamic>) {
+      setState(() {
+        // IMPORTANT: We overwrite the data at the exact index
+        _myServices[index] = result; 
+      });
+      
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Service updated successfully!")),
+      );
+    }
   }
 
   @override
@@ -42,7 +67,6 @@ class _ServiceManagementPageState extends State<ServiceManagementPage> {
       ),
       body: Column(
         children: [
-          // Header Section - Simplified to just a button and label
           Container(
             padding: const EdgeInsets.all(20),
             color: Colors.teal.withOpacity(0.1),
@@ -54,7 +78,7 @@ class _ServiceManagementPageState extends State<ServiceManagementPage> {
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.teal),
                 ),
                 IconButton.filled(
-                  onPressed: _navigateAndAddService, // Calls the navigation logic
+                  onPressed: _navigateAndAddService,
                   icon: const Icon(Icons.add),
                   style: IconButton.styleFrom(
                     backgroundColor: Colors.teal,
@@ -71,11 +95,15 @@ class _ServiceManagementPageState extends State<ServiceManagementPage> {
                 : ListView.builder(
                     itemCount: _myServices.length,
                     itemBuilder: (context, index) {
+                      final service = _myServices[index];
                       return Card(
                         margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
                         child: ListTile(
-                          leading: const Icon(Icons.check_circle, color: Colors.teal),
-                          title: Text(_myServices[index]),
+                          onTap: () => _viewServiceDetails(index),
+                          leading: const Icon(Icons.handyman, color: Colors.teal),
+                          title: Text(service['name'] ?? 'Unknown Service', 
+                            style: const TextStyle(fontWeight: FontWeight.bold)),
+                          subtitle: Text("${service['area']}, ${service['city']}"),
                           trailing: IconButton(
                             icon: const Icon(Icons.delete_outline, color: Colors.red),
                             onPressed: () => _deleteService(index),
@@ -89,4 +117,4 @@ class _ServiceManagementPageState extends State<ServiceManagementPage> {
       ),
     );
   }
-} 
+}

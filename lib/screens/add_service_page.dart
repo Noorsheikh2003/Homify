@@ -1,125 +1,122 @@
 import 'package:flutter/material.dart';
 
 class AddServicePage extends StatefulWidget {
-  const AddServicePage({super.key});
+  final Map<String, dynamic>? existingService;
+  final bool isReadOnly; // Initial mode (View or Add)
+
+  const AddServicePage({super.key, this.existingService, this.isReadOnly = false});
 
   @override
   State<AddServicePage> createState() => _AddServicePageState();
 }
 
 class _AddServicePageState extends State<AddServicePage> {
-  // 1. ADDED NEW CONTROLLERS
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _addressController = TextEditingController();
-  final TextEditingController _areaController = TextEditingController();
-  final TextEditingController _cityController = TextEditingController();
+  late TextEditingController _nameController;
+  late TextEditingController _addressController;
+  late TextEditingController _areaController;
+  late TextEditingController _cityController;
+
+  // Track if we are currently in edit mode
+  late bool _editMode;
+
+  @override
+  void initState() {
+    super.initState();
+    // If it's a new service, editMode is true. If viewing existing, it's false.
+    _editMode = widget.existingService == null ? true : !widget.isReadOnly;
+
+    _nameController = TextEditingController(text: widget.existingService?['name'] ?? '');
+    _addressController = TextEditingController(text: widget.existingService?['address'] ?? '');
+    _areaController = TextEditingController(text: widget.existingService?['area'] ?? '');
+    _cityController = TextEditingController(text: widget.existingService?['city'] ?? '');
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Add New Service", style: TextStyle(color: Colors.white)),
+        title: Text(_editMode ? "Add Service Details" : "Edit Service Details", style: const TextStyle(color: Colors.white)),
         backgroundColor: Colors.teal,
-        centerTitle: true, // Optional: centers the title
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
-        ),
+        centerTitle: true,
       ),
-      body: SingleChildScrollView( // Added scroll view to prevent overflow when keyboard opens
+      body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Text(
-                "Service Details",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.teal),
+              Text(
+                _editMode ? "Service Information" : "Modify Information",
+                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.teal),
               ),
               const SizedBox(height: 20),
               
-              // SERVICE NAME FIELD
-              TextField(
-                controller: _nameController,
-                decoration: const InputDecoration(
-                  labelText: "Service Name",
-                  hintText: "e.g., Electrician, Deep Cleaning",
-                  border: OutlineInputBorder(),
-                  focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.teal)),
-                ),
-              ),
+              _buildTextField(_nameController, "Service Name", "e.g., Electrician", Icons.work),
               const SizedBox(height: 15),
-
-              // 2. SHOP ADDRESS FIELD
-              TextField(
-                controller: _addressController,
-                decoration: const InputDecoration(
-                  labelText: "Shop Address",
-                  hintText: "Street No, Building Name",
-                  prefixIcon: Icon(Icons.location_on, color: Colors.teal),
-                  border: OutlineInputBorder(),
-                ),
-              ),
+              _buildTextField(_addressController, "Shop Address", "Street/Building", Icons.location_on),
               const SizedBox(height: 15),
-
-              // 3. AREA FIELD
-              TextField(
-                controller: _areaController,
-                decoration: const InputDecoration(
-                  labelText: "Area",
-                  hintText: "e.g., Gulshan-e-Iqbal, Defence",
-                  prefixIcon: Icon(Icons.map, color: Colors.teal),
-                  border: OutlineInputBorder(),
-                ),
-              ),
+              _buildTextField(_areaController, "Area", "e.g., Gulshan-e-Iqbal", Icons.map),
               const SizedBox(height: 15),
-
-              // 4. CITY FIELD
-              TextField(
-                controller: _cityController,
-                decoration: const InputDecoration(
-                  labelText: "City",
-                  hintText: "e.g., Karachi, Lahore",
-                  prefixIcon: Icon(Icons.location_city, color: Colors.teal),
-                  border: OutlineInputBorder(),
-                ),
-              ),
+              _buildTextField(_cityController, "City", "e.g., Karachi", Icons.location_city),
 
               const SizedBox(height: 30),
 
-              ElevatedButton(
-                onPressed: () {
-                  // Check if all fields are filled
-                  if (_nameController.text.isNotEmpty && 
-                      _addressController.text.isNotEmpty &&
-                      _areaController.text.isNotEmpty &&
-                      _cityController.text.isNotEmpty) {
-                    
-                    // Sending a Map back to the previous screen instead of just a String
-                    Navigator.pop(context, {
-                      "name": _nameController.text,
-                      "address": _addressController.text,
-                      "area": _areaController.text,
-                      "city": _cityController.text,
+              // DYNAMIC BUTTON LOGIC
+              if (!_editMode)
+                // SHOW THIS BUTTON WHEN ONLY VIEWING
+                ElevatedButton.icon(
+                  onPressed: () {
+                    setState(() {
+                      _editMode = true; // Unlock the fields
                     });
-                  } else {
-                    // Simple alert if fields are empty
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("Please fill all fields")),
-                    );
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.teal,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 15),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  },
+                  icon: const Icon(Icons.edit),
+                  label: const Text("Update Details", style: TextStyle(fontSize: 18)),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.teal, // Different color to stand out
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                  ),
+                )
+              else
+                // SHOW THIS BUTTON WHEN ADDING OR EDITING
+                ElevatedButton(
+                  onPressed: () {
+                    if (_nameController.text.isNotEmpty && _addressController.text.isNotEmpty) {
+                      Navigator.pop(context, {
+                        "name": _nameController.text,
+                        "address": _addressController.text,
+                        "area": _areaController.text,
+                        "city": _cityController.text,
+                      });
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.teal,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                  ),
+                  child: Text(widget.existingService == null ? "Save Service" : "Save Changes", 
+                    style: const TextStyle(fontSize: 18)),
                 ),
-                child: const Text("Save Service", style: TextStyle(fontSize: 18)),
-              ),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildTextField(TextEditingController controller, String label, String hint, IconData icon) {
+    return TextField(
+      controller: controller,
+      readOnly: !_editMode, // Controlled by our editMode variable
+      decoration: InputDecoration(
+        labelText: label,
+        hintText: hint,
+        prefixIcon: Icon(icon, color: Colors.teal),
+        filled: !_editMode, // Light grey background when locked
+        fillColor: Colors.grey.withOpacity(0.1),
+        border: const OutlineInputBorder(),
       ),
     );
   }

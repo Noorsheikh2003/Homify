@@ -78,7 +78,7 @@ class _LoginPageState extends State<LoginPage> {
                     // Login Button
                     ElevatedButton(
                       onPressed: () {
-                        Navigator.pushReplacementNamed(context, '/customer_dashboard');
+                        Navigator.pushReplacementNamed(context, '/provider_dashboard');
                       },
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 15),
