@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
-// Screens
 import 'screens/register.dart'; 
 import 'screens/login.dart'; 
 import 'screens/splash_screen.dart';
-// Provider Screens
 import 'screens/provider_dashboard.dart';
 import 'screens/service_management.dart';
 import 'screens/add_service_page.dart';
 import 'screens/provider_profile_page.dart';
-// Customer Screens
 import 'screens/customer_dashboard.dart';
 import 'screens/customer_profile_page.dart';
 import 'screens/find_services_page.dart';
@@ -32,18 +29,14 @@ class HomifyApp extends StatelessWidget {
       ),
       initialRoute: '/splash',
       routes: {
-        // Common Routes
+       
         '/splash': (context) => const SplashScreen(),
         '/login': (context) => const LoginPage(),
         '/register': (context) => const RegisterPage(),
-
-        // Provider Routes
         '/provider_dashboard': (context) => const ProviderDashboard(),
         '/service_management': (context) => const ServiceManagementPage(),
         '/add_service_page': (context) => const AddServicePage(),
         '/provider_profile_page': (context) => const ProviderProfilePage(),
-
-        // Customer Routes
         '/customer_dashboard': (context) => const CustomerDashboard(),
         '/customer_profile_page': (context) => const CustomerProfilePage(),
         '/find_services': (context) => const FindServicesPage(),

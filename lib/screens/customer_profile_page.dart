@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart'; // 1. Import the package
 
 class CustomerProfilePage extends StatefulWidget {
   const CustomerProfilePage({super.key});
@@ -8,14 +9,19 @@ class CustomerProfilePage extends StatefulWidget {
 }
 
 class _CustomerProfilePageState extends State<CustomerProfilePage> {
-  // Logic to toggle between View and Edit mode
   bool _isEditing = true; 
 
-  // Controllers for input
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
+
+  // 2. Define the Phone Mask (Format: 03XX-XXXXXXX)
+  var phoneMask = MaskTextInputFormatter(
+    mask: '####-#######', 
+    filter: { "#": RegExp(r'[0-9]') },
+    type: MaskAutoCompletionType.lazy,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +41,6 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
         padding: const EdgeInsets.all(20.0),
         child: Column(
           children: [
-            // Profile Header Icon
             const Center(
               child: CircleAvatar(
                 radius: 50,
@@ -52,18 +57,32 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
     );
   }
 
-  // UI for Inserting/Updating Data
   Widget _buildEditForm() {
     return Column(
       children: [
         _buildTextField(_nameController, "Full Name", Icons.person_outline),
-        _buildTextField(_phoneController, "Phone No", Icons.phone_outlined),
-        _buildTextField(_emailController, "Email", Icons.email_outlined),
+        
+        // 3. Apply Phone Mask and Number Keyboard
+        _buildTextField(
+          _phoneController, 
+          "Phone No", 
+          Icons.phone_outlined, 
+          formatter: phoneMask,
+          inputType: TextInputType.number,
+        ),
+        
+        _buildTextField(
+          _emailController, 
+          "Email", 
+          Icons.email_outlined, 
+          inputType: TextInputType.emailAddress,
+        ),
+        
         _buildTextField(_addressController, "Address", Icons.home_outlined, maxLines: 2),
         const SizedBox(height: 30),
         ElevatedButton(
           onPressed: () {
-            setState(() => _isEditing = false); // Save and switch to view
+            setState(() => _isEditing = false); 
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text("Profile Saved Successfully!"), backgroundColor: Colors.teal),
             );
@@ -79,7 +98,6 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
     );
   }
 
-  // UI for Displaying Saved Data
   Widget _buildProfileView() {
     return Card(
       elevation: 4,
@@ -104,15 +122,23 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
     );
   }
 
-  // Helper widget for TextFields
-  Widget _buildTextField(TextEditingController controller, String label, IconData icon, {int maxLines = 1}) {
+  // 4. Updated Helper with formatter and keyboard type support
+  Widget _buildTextField(
+    TextEditingController controller, 
+    String label, 
+    IconData icon, 
+    {int maxLines = 1, MaskTextInputFormatter? formatter, TextInputType inputType = TextInputType.text}
+  ) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 15),
       child: TextField(
         controller: controller,
         maxLines: maxLines,
+        keyboardType: inputType,
+        inputFormatters: formatter != null ? [formatter] : [],
         decoration: InputDecoration(
           labelText: label,
+          hintText: formatter?.getMask(), // Shows pattern like ####-#######
           prefixIcon: Icon(icon, color: Colors.teal),
           border: const OutlineInputBorder(),
           focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.teal, width: 2)),
@@ -121,7 +147,6 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
     );
   }
 
-  // Helper widget for View Rows
   Widget _buildInfoRow(IconData icon, String label, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),

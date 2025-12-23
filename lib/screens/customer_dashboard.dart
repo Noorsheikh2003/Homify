@@ -9,20 +9,23 @@ class CustomerDashboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[50],
       appBar: AppBar(
         title: const Text("Customer Portal", style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.teal,
         centerTitle: true,
-        // CUSTOM ABOUT US ICON + TEXT ON THE LEFT
-        leadingWidth: 80, // Increased width to fit the text
-        leading: GestureDetector(
-          onTap: () {
+        iconTheme: const IconThemeData(color: Colors.white),
+        // FIXED: Replaced GestureDetector with IconButton for hover support
+        leadingWidth: 80, 
+        leading: IconButton(
+          tooltip: 'About Us', // Adds the hover label like Logout
+          onPressed: () {
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => const AboutPage()),
             );
           },
-          child: const Column(
+          icon: const Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(Icons.person, color: Colors.white, size: 22),
@@ -37,7 +40,6 @@ class CustomerDashboard extends StatelessWidget {
             ],
           ),
         ),
-        // LOGOUT ICON ON THE RIGHT
         actions: [
           IconButton(
             icon: const Icon(Icons.logout, color: Colors.white),
@@ -82,7 +84,6 @@ class CustomerDashboard extends StatelessWidget {
     );
   }
 
-  // Helper Method
   Widget _buildDashboardButton(BuildContext context, String title, IconData icon, Widget? destinationPage) {
     return ElevatedButton.icon(
       onPressed: () {
@@ -104,6 +105,8 @@ class CustomerDashboard extends StatelessWidget {
         foregroundColor: Colors.white,
         padding: const EdgeInsets.symmetric(vertical: 20),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        // Ensures the cursor changes to a pointer on web/desktop
+        enabledMouseCursor: SystemMouseCursors.click, 
       ),
     );
   }
